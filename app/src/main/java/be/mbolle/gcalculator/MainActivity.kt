@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,7 +89,7 @@ fun GCalculatorApp() {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             GButtonGrid(
                 buttons = buttons,
-                modifier = Modifier.padding(start = 15.dp, top = 4.dp, end = 15.dp)
+                modifier = Modifier.padding(start = 15.dp, top = 4.dp, end = 15.dp, bottom = 20.dp)
             )
         }
     }
@@ -99,42 +100,55 @@ fun GButtonGrid(buttons: List<CalculationButton>, modifier: Modifier = Modifier)
     val gridButtons = buttons.subList(0, 16)
     val lastButtons = buttons.subList(16, buttons.size)
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(4),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = modifier
+    val defaultSpacedItem = 4.dp;
 
-    ) {
-        items(gridButtons) { button ->
-            GButton(content = button.text, color = button.color!!, modifier = Modifier.aspectRatio(1f))
+    Column(modifier = modifier) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(4),
+            verticalArrangement = Arrangement.spacedBy(defaultSpacedItem),
+            horizontalArrangement = Arrangement.spacedBy(defaultSpacedItem),
+        ) {
+            items(gridButtons) { button ->
+                GButton(
+                    content = button.text,
+                    color = button.color!!,
+                    modifier = Modifier.aspectRatio(1f)
+                )
+            }
         }
-    }
 
-    Row(
-        modifier = modifier.height(IntrinsicSize.Max),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        GButton(
-            content = lastButtons[0].text, color = lastButtons[0].color!!, modifier = Modifier
-                .weight(2f)
-                .fillMaxHeight()
-        )
-        GButton(
-            content = lastButtons[1].text, color = lastButtons[1].color!!, modifier = Modifier
-                .weight(1f)
-                .aspectRatio(1f)
-        )
-        GButton(
-            content = lastButtons[2].text, color = lastButtons[2].color!!, modifier = Modifier
-                .weight(1f)
-                .aspectRatio(1f)
-        )
+        Spacer(modifier = Modifier.height(defaultSpacedItem))
+
+        Row(
+            modifier = Modifier.height(IntrinsicSize.Max),
+            horizontalArrangement = Arrangement.spacedBy(defaultSpacedItem)
+        ) {
+            GButton(
+                content = lastButtons[0].text, color = lastButtons[0].color!!, modifier = Modifier
+                    .weight(2f)
+                    .fillMaxHeight()
+            )
+            GButton(
+                content = lastButtons[1].text, color = lastButtons[1].color!!, modifier = Modifier
+                    .weight(1f)
+                    .aspectRatio(1f)
+            )
+            GButton(
+                content = lastButtons[2].text, color = lastButtons[2].color!!, modifier = Modifier
+                    .weight(1f)
+                    .aspectRatio(1f)
+            )
+        }
     }
 }
 
 @Composable
-fun GButton(content: String, onClick: () -> Unit = {}, color: Color, modifier: Modifier = Modifier) {
+fun GButton(
+    content: String,
+    onClick: () -> Unit = {},
+    color: Color,
+    modifier: Modifier = Modifier
+) {
     OutlinedButton(
         onClick = onClick,
         modifier = modifier,
