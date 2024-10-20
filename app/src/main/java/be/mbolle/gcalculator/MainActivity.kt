@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -26,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +49,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//aspect ratio
 
 @Preview(showSystemUi = true)
 @Composable
@@ -85,12 +88,25 @@ fun GCalculatorApp() {
             .fillMaxSize()
             .background(Color(red = 232, green = 237, blue = 209))
     ) {
-
-        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        Column(modifier = Modifier.fillMaxSize().padding(horizontal = 15.dp, vertical = 15.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            GHeader(title = stringResource(R.string.app_name), mode = "Standard")
             GButtonGrid(
-                buttons = buttons,
-                modifier = Modifier.padding(start = 15.dp, top = 4.dp, end = 15.dp, bottom = 20.dp)
+                buttons = buttons
             )
+        }
+    }
+}
+
+@Composable
+fun GHeader(title: String, mode: String, modifier: Modifier = Modifier) {
+    val calculatorVector = painterResource(R.drawable.calculator)
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier.fillMaxWidth()) {
+        Column {
+            Text(text = title, fontWeight = FontWeight.ExtraBold, fontSize = 25.sp)
+            Text(text = mode, fontSize = 17.sp)
+        }
+        Column {
+            Image(painter = calculatorVector, contentDescription = "calculator mode")
         }
     }
 }
@@ -100,7 +116,7 @@ fun GButtonGrid(buttons: List<CalculationButton>, modifier: Modifier = Modifier)
     val gridButtons = buttons.subList(0, 16)
     val lastButtons = buttons.subList(16, buttons.size)
 
-    val defaultSpacedItem = 4.dp;
+    val defaultSpacedItem = 4.dp
 
     Column(modifier = modifier) {
         LazyVerticalGrid(
