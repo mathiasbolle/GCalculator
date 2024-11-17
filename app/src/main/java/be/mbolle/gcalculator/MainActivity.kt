@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,6 +27,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -50,6 +55,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
+
 @Preview(showSystemUi = true)
 @Composable
 fun GCalculatorApp() {
@@ -57,41 +63,62 @@ fun GCalculatorApp() {
     val lemonchiffon = Color(0xFFF6FFCA)
     val greenYellow = Color(0xFFDDFF54)
 
+    val value1 by remember { mutableIntStateOf(0) }
+    val operator by remember { mutableStateOf(null) }
+    val value2 by remember { mutableIntStateOf(0) }
+
+
+    val onValue1Change = { value1: Int ->
+
+    }
+
     val buttons = listOf(
-        CalculationButton("AC", lemonchiffon),
-        CalculationButton("+-", lemonchiffon),
-        CalculationButton("%", lemonchiffon),
-        CalculationButton("/", greenYellow),
+        CalculationButton("AC", lemonchiffon, ActionType.Clear()),
+        CalculationButton("+-", lemonchiffon, null),
+        CalculationButton("%", lemonchiffon, null),
+        CalculationButton("/", greenYellow, ActionType.Operator(OperatorType.DIVIDE)),
 
-        CalculationButton("1", wColor),
-        CalculationButton("2", wColor),
-        CalculationButton("3", wColor),
-        CalculationButton("+", greenYellow),
+        CalculationButton("1", wColor, ActionType.Digit()),
+        CalculationButton("2", wColor, ActionType.Digit()),
+        CalculationButton("3", wColor, ActionType.Digit()),
+        CalculationButton("+", greenYellow, ActionType.Digit()),
 
-        CalculationButton("4", wColor),
-        CalculationButton("5", wColor),
-        CalculationButton("6", wColor),
-        CalculationButton("-", greenYellow),
+        CalculationButton("4", wColor, ActionType.Digit()),
+        CalculationButton("5", wColor, ActionType.Digit()),
+        CalculationButton("6", wColor, ActionType.Digit()),
+        CalculationButton("-", greenYellow, null),
 
-        CalculationButton("7", wColor),
-        CalculationButton("8", wColor),
-        CalculationButton("9", wColor),
-        CalculationButton("x", greenYellow),
+        CalculationButton("7", wColor, ActionType.Digit()),
+        CalculationButton("8", wColor, ActionType.Digit()),
+        CalculationButton("9", wColor, ActionType.Digit()),
+        CalculationButton("x", greenYellow, null),
 
-        CalculationButton("0", wColor),
-        CalculationButton(".", wColor),
-        CalculationButton("=", greenYellow)
+        CalculationButton("0", wColor, ActionType.Digit()),
+        CalculationButton(".", wColor, ActionType.Digit()),
+        CalculationButton("=", greenYellow, ActionType.Enter())
     )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(red = 232, green = 237, blue = 209))
+            .safeDrawingPadding()
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(horizontal = 15.dp, vertical = 15.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            GHeader(title = stringResource(R.string.app_name), mode = "Standard")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 15.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            GHeader(
+                title = stringResource(R.string.app_name), mode = "Standard", modifier =
+                Modifier
+                    .fillMaxWidth()
+            )
+            GTextField("2", modifier = Modifier.height(10.dp))
             GButtonGrid(
-                buttons = buttons
+                buttons = buttons,
+
             )
         }
     }
@@ -100,7 +127,7 @@ fun GCalculatorApp() {
 @Composable
 fun GHeader(title: String, mode: String, modifier: Modifier = Modifier) {
     val calculatorVector = painterResource(R.drawable.calculator)
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier.fillMaxWidth()) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier) {
         Column {
             Text(text = title, fontWeight = FontWeight.ExtraBold, fontSize = 25.sp)
             Text(text = mode, fontSize = 17.sp)
@@ -112,11 +139,25 @@ fun GHeader(title: String, mode: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GButtonGrid(buttons: List<CalculationButton>, modifier: Modifier = Modifier) {
+fun GTextField(input: String, modifier: Modifier = Modifier) {
+    Column {
+        Text(text = "1+1", fontSize = 17.sp)
+        Spacer(modifier = modifier)
+        Text(text = input, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
+    }
+}
+
+@Composable
+fun GButtonGrid(
+    buttons: List<CalculationButton>,
+
+    modifier: Modifier = Modifier
+) {
     val gridButtons = buttons.subList(0, 16)
     val lastButtons = buttons.subList(16, buttons.size)
-
     val defaultSpacedItem = 4.dp
+
+
 
     Column(modifier = modifier) {
         LazyVerticalGrid(
@@ -128,7 +169,8 @@ fun GButtonGrid(buttons: List<CalculationButton>, modifier: Modifier = Modifier)
                 GButton(
                     content = button.text,
                     color = button.color!!,
-                    modifier = Modifier.aspectRatio(1f)
+                    modifier = Modifier.aspectRatio(1f),
+                    onClick = {}
                 )
             }
         }
@@ -142,7 +184,8 @@ fun GButtonGrid(buttons: List<CalculationButton>, modifier: Modifier = Modifier)
             GButton(
                 content = lastButtons[0].text, color = lastButtons[0].color!!, modifier = Modifier
                     .weight(2f)
-                    .fillMaxHeight()
+                    .fillMaxHeight(),
+                onClick = {}
             )
             GButton(
                 content = lastButtons[1].text, color = lastButtons[1].color!!, modifier = Modifier
@@ -186,4 +229,21 @@ fun GButtonPreview() {
 }
 
 // Model of a calculation button
-data class CalculationButton(val text: String, val color: Color? = Color.White)
+data class CalculationButton(
+    val text: String,
+    val color: Color? = Color.White,
+    val actionType: ActionType?
+)
+
+sealed class ActionType {
+    data class Operator(val operatorType: OperatorType) : ActionType()
+    class Digit() : ActionType()
+    class Clear() : ActionType()
+    class Enter() : ActionType()
+}
+
+enum class OperatorType {
+    PLUS,
+    MIN,
+    DIVIDE
+}
