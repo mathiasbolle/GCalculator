@@ -4,7 +4,7 @@ sealed class Token {
 
 
 
-    class Operator(val operatorType: OperatorType): Token() {
+    class Operator(var operatorType: OperatorType = OperatorType.UNDEFINED): Token() {
 
     }
 

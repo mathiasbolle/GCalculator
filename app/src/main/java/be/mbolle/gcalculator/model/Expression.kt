@@ -6,21 +6,19 @@ import be.mbolle.gcalculator.model.OperatorType.*
  * Represents the calculation
  */
 class Expression(
-    private val leftDigit: List<Token.Digit>,
+    private val leftDigit: Double,
     private val operator: Token.Operator,
-    private val rightDigit: List<Token.Digit>
+    private val rightDigit: Double
 ) {
-    fun calculate(): Double {
-        val leftDigitValue = leftDigit.map { value -> value.toString() }.reduce { acc, s -> acc + s }
-            .toDouble()
-        val rightDigitValue = rightDigit.map { value -> value.toString() }.reduce {acc, s -> acc + s}
-            .toDouble()
 
+
+
+    fun calculate(): Double {
         return when (operator.operatorType) {
-            PLUS -> leftDigitValue + rightDigitValue
-            MIN -> leftDigitValue - rightDigitValue
-            MULTIPLY -> leftDigitValue * rightDigitValue
-            DIVIDE -> leftDigitValue / rightDigitValue
+            PLUS -> leftDigit + rightDigit
+            MIN -> leftDigit - rightDigit
+            MULTIPLY -> leftDigit * rightDigit
+            DIVIDE -> leftDigit / rightDigit
             UNDEFINED -> 0.0
         }
     }

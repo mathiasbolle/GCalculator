@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -41,6 +42,9 @@ import be.mbolle.gcalculator.model.Token
 @Preview(showSystemUi = true)
 @Composable
 fun GCalculatorApp(viewModel: CalculationViewModel = viewModel()) {
+    val state = viewModel.uiState.collectAsState()
+
+
     val wColor = Color.White
     val lemonchiffon = Color(0xFFF6FFCA)
     val greenYellow = Color(0xFFDDFF54)
@@ -88,7 +92,11 @@ fun GCalculatorApp(viewModel: CalculationViewModel = viewModel()) {
                 Modifier
                     .fillMaxWidth()
             )
-            GTextField("2", modifier = Modifier.height(10.dp))
+            GTextField(
+                value1 = state.value.rightDigit,
+                value2 = state.value.leftDigit,
+                operator = state.value.operator,
+                state.value.inputResult, modifier = Modifier.height(10.dp))
             GButtonGrid(
                 buttons = buttons,
                 buttonClick = { action -> viewModel.execute(action)}
@@ -112,9 +120,9 @@ fun GHeader(title: String, mode: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GTextField(input: String, modifier: Modifier = Modifier) {
+fun GTextField(value1: String, value2: String, operator: String, input: String, modifier: Modifier = Modifier) {
     Column {
-        Text(text = "1+1", fontSize = 17.sp)
+        Text(text = "${value1}${operator}${value2}", fontSize = 17.sp)
         Spacer(modifier = modifier)
         Text(text = input, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
     }
